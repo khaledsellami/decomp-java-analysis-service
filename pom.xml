@@ -74,11 +74,13 @@
                 <version>0.6.1</version>
                 <configuration>
                     <protocArtifact>
-                        com.google.protobuf:protoc:3.3.0:exe:osx-x86_64
+                        com.google.protobuf:protoc:3.21.5:exe:${os.detected.classifier}
+<!--                        com.google.protobuf:protoc:3.3.0:exe:osx-x86_64-->
                     </protocArtifact>
                     <pluginId>grpc-java</pluginId>
                     <pluginArtifact>
-                        io.grpc:protoc-gen-grpc-java:1.4.0:exe:osx-x86_64
+                        io.grpc:protoc-gen-grpc-java:1.54.1:exe:${os.detected.classifier}
+<!--                        io.grpc:protoc-gen-grpc-java:1.4.0:exe:osx-x86_64-->
                     </pluginArtifact>
                     <protoSourceRoot>src/main/resources</protoSourceRoot>
                 </configuration>
@@ -90,6 +92,19 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>AnalysisServer</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
