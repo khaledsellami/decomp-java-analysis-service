@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DataLoader {
+    // TODO change to a more suitable storage approach (mongodb for example)
     static private final String outputPath = "./data/static_analysis/";
     private static final Logger logger = LoggerFactory.getLogger(DataLoader.class);
     private static final String classFileName = "typeData.json";
