@@ -15,8 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DataLoader {
+
     // TODO change to a more suitable storage approach (mongodb for example)
-    static private final String outputPath = "./data/static_analysis/";
+    private static final String defaultOutputPath = "./data/static_analysis/";
+    private String outputPath = "./data/static_analysis/";
     private static final Logger logger = LoggerFactory.getLogger(DataLoader.class);
     private static final String classFileName = "typeData.json";
     private static final String methodFileName = "methodData.json";
@@ -26,7 +28,7 @@ public class DataLoader {
                       String appName) throws IOException{
         logger.info("Converting class data to JSON");
         ClassContainer.Builder classContainer = ClassContainer.newBuilder().addAllClasses(classes);
-        String jsonClasses = JsonFormat.printer().print(classContainer);
+        String jsonClasses = JsonFormat.printer().includingDefaultValueFields().print(classContainer);
 //        StringBuilder jsonClassesBuilder = new StringBuilder("[\n");
 //        int i = 0;
 //        for (Class_ class_: classes){
@@ -39,7 +41,7 @@ public class DataLoader {
 //        String jsonClasses = jsonClassesBuilder.toString();
         logger.info("Converting method data to JSON");
         MethodContainer.Builder methodContainer = MethodContainer.newBuilder().addAllMethods(methods);
-        String jsonMethods = JsonFormat.printer().print(methodContainer);
+        String jsonMethods = JsonFormat.printer().includingDefaultValueFields().print(methodContainer);
 //        StringBuilder jsonMethodsBuilder = new StringBuilder("[\n");
 //        i = 0;
 //        for (Method_ method_: methods){
@@ -53,7 +55,7 @@ public class DataLoader {
         logger.info("Converting failed invocation match data to JSON");
         InvocationContainer.Builder invocationContainer = InvocationContainer.newBuilder().addAllInvocations(
                 invocations);
-        String jsonInvocations = JsonFormat.printer().print(invocationContainer);
+        String jsonInvocations = JsonFormat.printer().includingDefaultValueFields().print(invocationContainer);
 //        StringBuilder jsonInvocationsBuilder = new StringBuilder("[\n");
 //        i = 0;
 //        for (Invocation_ invocation_: invocations){
@@ -158,5 +160,12 @@ public class DataLoader {
         InvocationContainer.Builder invocationContainer = InvocationContainer.newBuilder();
         JsonFormat.parser().merge(dataString, invocationContainer);
         return invocationContainer.getInvocationsList();
+    }
+    public void setOutputPath(String outputPath) {
+        this.outputPath = outputPath;
+    }
+
+    public void restoreDefaultOutputPath(){
+        this.outputPath = defaultOutputPath;
     }
 }
