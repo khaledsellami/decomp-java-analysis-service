@@ -42,17 +42,17 @@ public class RepoHandler {
         String repoPath = Paths.get(dataPath, appName).toString();
         File f = new File(repoPath);
         if (f.exists() && f.isDirectory()){
-            logger.debug("Source code for " + appName + " found locally!");
+            logger.info("Source code for " + appName + " found locally!");
             return repoPath;
         }
         repoPath = Paths.get(tempPath, appName).toString();
         f = new File(repoPath);
         if (f.exists() && f.isDirectory()){
-            logger.debug("Source code for " + appName + " found in temp folder!");
+            logger.info("Source code for " + appName + " found in temp folder!");
             return repoPath;
         }
         try {
-            logger.debug("Cloning source code for " + appName + " !");
+            logger.info("Cloning source code for " + appName + " !");
             Git.cloneRepository()
                     .setURI(appRepo)
                     .setDirectory(new File(repoPath))

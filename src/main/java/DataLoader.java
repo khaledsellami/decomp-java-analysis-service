@@ -24,7 +24,7 @@ public class DataLoader {
 
     private void save(List<Class_> classes, List<Method_> methods, List<Invocation_> invocations,
                       String appName) throws IOException{
-        logger.debug("Converting class data to JSON");
+        logger.info("Converting class data to JSON");
         ClassContainer.Builder classContainer = ClassContainer.newBuilder().addAllClasses(classes);
         String jsonClasses = JsonFormat.printer().print(classContainer);
 //        StringBuilder jsonClassesBuilder = new StringBuilder("[\n");
@@ -37,7 +37,7 @@ public class DataLoader {
 //        }
 //        jsonClassesBuilder.append(']');
 //        String jsonClasses = jsonClassesBuilder.toString();
-        logger.debug("Converting method data to JSON");
+        logger.info("Converting method data to JSON");
         MethodContainer.Builder methodContainer = MethodContainer.newBuilder().addAllMethods(methods);
         String jsonMethods = JsonFormat.printer().print(methodContainer);
 //        StringBuilder jsonMethodsBuilder = new StringBuilder("[\n");
@@ -50,7 +50,7 @@ public class DataLoader {
 //        }
 //        jsonMethodsBuilder.append(']');
 //        String jsonMethods = jsonMethodsBuilder.toString();
-        logger.debug("Converting failed invocation match data to JSON");
+        logger.info("Converting failed invocation match data to JSON");
         InvocationContainer.Builder invocationContainer = InvocationContainer.newBuilder().addAllInvocations(
                 invocations);
         String jsonInvocations = JsonFormat.printer().print(invocationContainer);
@@ -66,7 +66,7 @@ public class DataLoader {
 //        String jsonInvocations = jsonInvocationsBuilder.toString();
         try {
             String savePath = Paths.get(outputPath, appName, classFileName).toString();
-            logger.debug("Saving type data in " + savePath);
+            logger.info("Saving type data in " + savePath);
             File file = new File(savePath);
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -74,7 +74,7 @@ public class DataLoader {
             out.println(jsonClasses);
             out.close();
             savePath = Paths.get(outputPath, appName, methodFileName).toString();
-            logger.debug("Saving method data in " + savePath);
+            logger.info("Saving method data in " + savePath);
             file = new File(savePath);
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -82,7 +82,7 @@ public class DataLoader {
             out.println(jsonMethods);
             out.close();
             savePath = Paths.get(outputPath, appName, invocationFileName).toString();
-            logger.debug("Saving invocation data in " + savePath);
+            logger.info("Saving invocation data in " + savePath);
             file = new File(savePath);
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -113,16 +113,16 @@ public class DataLoader {
 
     public boolean analyze(String appName, String appPath) throws IOException {
         if (exists(appName)){
-            logger.debug("Application " + appName + " exists! Exiting process.");
+            logger.info("Application " + appName + " exists! Exiting process.");
             return false;
         }
-        logger.debug("Application " + appName + " not found! Starting analysis.");
+        logger.info("Application " + appName + " not found! Starting analysis.");
         ASTParser astParser = new ASTParser(appPath, appName);
         Triple<List<Class_>, List<Method_>, List<Invocation_>> analysisResults = astParser.analyze();
         List<Class_> classes = analysisResults.getLeft();
         List<Method_> methods = analysisResults.getMiddle();
         List<Invocation_> invocations = analysisResults.getRight();
-        logger.debug("Saving data for Application " + appName + " !");
+        logger.info("Saving data for Application " + appName + " !");
         save(classes, methods, invocations, appName);
         return true;
     }
@@ -130,7 +130,7 @@ public class DataLoader {
     public List<Class_> getClasses(String appName) throws IOException {
         if (!exists(appName))
             return null;
-        logger.debug("Loading class data for Application " + appName + " !");
+        logger.info("Loading class data for Application " + appName + " !");
         String savePath = Paths.get(outputPath, appName, classFileName).toString();
         String dataString = FileUtils.readFileToString(new File(savePath), StandardCharsets.UTF_8);
         ClassContainer.Builder classContainer = ClassContainer.newBuilder();
@@ -141,7 +141,7 @@ public class DataLoader {
     public List<Method_> getMethods(String appName) throws IOException {
         if (!exists(appName))
             return null;
-        logger.debug("Loading method data for Application " + appName + " !");
+        logger.info("Loading method data for Application " + appName + " !");
         String savePath = Paths.get(outputPath, appName, methodFileName).toString();
         String dataString = FileUtils.readFileToString(new File(savePath), StandardCharsets.UTF_8);
         MethodContainer.Builder methodContainer = MethodContainer.newBuilder();
@@ -152,7 +152,7 @@ public class DataLoader {
     public List<Invocation_> getInvocations(String appName) throws IOException {
         if (!exists(appName))
             return null;
-        logger.debug("Loading invocation data for Application " + appName + " !");
+        logger.info("Loading invocation data for Application " + appName + " !");
         String savePath = Paths.get(outputPath, appName, invocationFileName).toString();
         String dataString = FileUtils.readFileToString(new File(savePath), StandardCharsets.UTF_8);
         InvocationContainer.Builder invocationContainer = InvocationContainer.newBuilder();

@@ -1,0 +1,32 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="fileLogger" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="consoleLogger" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="io.grpc" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="org.eclipse.jgit" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

@@ -61,38 +61,38 @@ public class ASTParser {
                             });
                 }
                 catch (IOException e){
-                    logger.debug(e.toString());
+                    logger.info(e.toString());
                 }
             }
         }
     }
 
     public Triple<List<Class_>, List<Method_>, List<Invocation_>> analyze() {
-        logger.debug("Starting analysis for project " + appName);
-        logger.debug("Creating Spoon Launcher");
+        logger.info("Starting analysis for project " + appName);
+        logger.info("Creating Spoon Launcher");
         Launcher launcher = new Launcher();
         launcher.getEnvironment().setOutputType(OutputType.NO_OUTPUT);
         ArrayList<String> input_paths = new ArrayList<>();
         find_src(repoPath, input_paths, true);
         //launcher.getEnvironment().setIgnoreDuplicateDeclarations(true);
         for (String input_path : input_paths){
-            logger.debug("Adding PATH \"" + input_path + "\" as source");
+            logger.info("Adding PATH \"" + input_path + "\" as source");
             launcher.addInputResource(input_path);
         }
-        logger.debug("Creating type processor");
+        logger.info("Creating type processor");
         ArrayList<Class_> objects = new ArrayList<Class_>();
         ArrayList<Method_> methods = new ArrayList<Method_>();
         TypeProcessor typeProcessor = new TypeProcessor(objects, methods, appName);
         launcher.addProcessor(typeProcessor);
-        logger.debug("Creating invocation processor");
+        logger.info("Creating invocation processor");
         InvocationProcessor invocationProcessor = new InvocationProcessor(objects, methods, appName);
         launcher.addProcessor(invocationProcessor);
-        logger.debug("Starting process");
+        logger.info("Starting process");
         launcher.run();
-        logger.debug("Process finished successfully");
-        logger.debug("Detected " + typeProcessor.getObjects().size() + " classes and interfaces");
-        logger.debug("Detected " + typeProcessor.getMethods().size() + " methods");
-        logger.debug("Found " + invocationProcessor.successfulMatches + " successful matches and " +
+        logger.info("Process finished successfully");
+        logger.info("Detected " + typeProcessor.getObjects().size() + " classes and interfaces");
+        logger.info("Detected " + typeProcessor.getMethods().size() + " methods");
+        logger.info("Found " + invocationProcessor.successfulMatches + " successful matches and " +
                 invocationProcessor.failedMatches + " failed matches");
         return new ImmutableTriple<>(
                 typeProcessor.getObjects(), typeProcessor.getMethods(), invocationProcessor.getFailedMaps());

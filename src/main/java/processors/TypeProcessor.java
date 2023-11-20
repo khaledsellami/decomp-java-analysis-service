@@ -107,11 +107,11 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         }
         List<String> textAndNames = new ArrayList<>();
         textAndNames.add(ctType.getSimpleName());
-        //logger.debug("Adding referenced types for \"" + ctType.getSimpleName() + "\"");
+        //logger.info("Adding referenced types for \"" + ctType.getSimpleName() + "\"");
         List<String> referencedTypes = new ArrayList<>(ctType.getReferencedTypes().size());
         ctType.getReferencedTypes().forEach(type -> referencedTypes.add(type.getQualifiedName()));
         object_.addAllReferencedTypes(referencedTypes);
-        //logger.debug("Adding field types for \"" + ctType.getSimpleName() + "\"");
+        //logger.info("Adding field types for \"" + ctType.getSimpleName() + "\"");
         List<String> fieldTypes = new ArrayList<>(ctType.getFields().size());
         for (Object f: ctType.getAllFields()){
             CtFieldReference field = (CtFieldReference) f;
@@ -120,7 +120,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             //f.getReferencedTypes().forEach(type -> fieldTypes.add(type.getQualifiedName()));
         }
         object_.addAllFieldTypes(fieldTypes);
-        //logger.debug("Adding nested types for \"" + ctType.getSimpleName() + "\"");
+        //logger.info("Adding nested types for \"" + ctType.getSimpleName() + "\"");
         List<String> nestedTypes = new ArrayList<>(ctType.getNestedTypes().size());
         for (Object t: ctType.getNestedTypes()){
             CtType type = (CtType) t;
@@ -128,7 +128,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             textAndNames.add(type.getSimpleName());
         }
         object_.addAllNestedTypes(nestedTypes);
-        //logger.debug("Adding extended or implemented types for \"" + ctType.getSimpleName() + "\"");
+        //logger.info("Adding extended or implemented types for \"" + ctType.getSimpleName() + "\"");
         List<String> inheritedTypes = new ArrayList<>();
         CtTypeReference superClass = ctType.getSuperclass();
         if (superClass != null){
@@ -136,7 +136,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         }
         ctType.getSuperInterfaces().forEach(ref -> inheritedTypes.add(ref.getQualifiedName()));
         object_.addAllInheritedTypes(inheritedTypes);
-        //logger.debug("Adding methods and parameter and return types for \"" + ctType.getSimpleName() + "\"");
+        //logger.info("Adding methods and parameter and return types for \"" + ctType.getSimpleName() + "\"");
         List<String> parameterTypes = new ArrayList<>();
         List<String> returnTypes = new ArrayList<>(ctType.getMethods().size());
         List<String> classMethods = new ArrayList<>(ctType.getMethods().size());
@@ -144,7 +144,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             CtMethod method = (CtMethod) m;
             List<String> methodTextAndNames = new ArrayList<>();
             //String methodName = method.getSimpleName();
-            //logger.debug("Processing method \"" + methodName + "\" for " + logText + " \"" +
+            //logger.info("Processing method \"" + methodName + "\" for " + logText + " \"" +
             // ctType.getSimpleName() + "\"");
             Method_.Builder method_ = Method_.newBuilder();
             // start executable
