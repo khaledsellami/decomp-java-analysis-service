@@ -2,18 +2,29 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 
 import java.io.IOException;
 
-public class AnalysisServer {
+@CommandLine.Command(name = "start", mixinStandardHelpOptions = true, description = "Start the analysis server.")
+public class AnalysisServer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisServer.class);
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public void run() {
         int portNumber = 50100;
         logger.info("Starting " + AnalysisServer.class.getName() + " on port " + portNumber + "!");
-        Server server = ServerBuilder.forPort(portNumber).addService(new AnalyzerImp()).build();
-
-        server.start();
-        server.awaitTermination();
+        Server server = ServerBuilder.forPort(portNumber).addService(new RestrictedAnalyzerImp()).build();
+        try {
+            server.start();
+        }
+        catch (IOException e){
+            logger.info("Failed to start server due to error: \"" + e.getMessage() + "\"");
+        }
+        try {
+            server.awaitTermination();
+        }
+        catch (InterruptedException e2){
+            ;
+        }
         logger.info("Closing server!");
     }
 }

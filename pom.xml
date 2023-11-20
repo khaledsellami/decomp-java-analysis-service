@@ -57,6 +57,11 @@
             <artifactId>org.eclipse.jgit</artifactId>
             <version>6.5.0.202303070854-r</version>
         </dependency>
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.7.3</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -98,7 +103,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>AnalysisServer</mainClass>
+                            <mainClass>Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
