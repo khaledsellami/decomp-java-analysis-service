@@ -23,18 +23,18 @@ public class AnalysisCLI implements Runnable {
             required = false)
     private String outputPath;
     private final DataLoader dataLoader;
-    private final List<String> ALLOWED_APPS = Arrays.asList("petclinic", "plants");
+//    private final List<String> ALLOWED_APPS = Arrays.asList("petclinic", "plants");
 
     public AnalysisCLI() {
         this.dataLoader = new DataLoader();
     }
     @Override
     public void run() {
-        if (!ALLOWED_APPS.contains(appName)){
-            logger.info("Unauthorized  application '"+ appName +
-                    "'. Please provide a choice among [" + ALLOWED_APPS + "]");
-            return;
-        }
+//        if (!ALLOWED_APPS.contains(appName)){
+//            logger.info("Unauthorized  application '"+ appName +
+//                    "'. Please provide a choice among [" + ALLOWED_APPS + "]");
+//            return;
+//        }
         logger.info("Analyzing "+appName+"!");
         if (outputPath != null){
             dataLoader.setOutputPath(outputPath);

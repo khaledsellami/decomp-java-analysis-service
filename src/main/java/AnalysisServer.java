@@ -12,7 +12,7 @@ public class AnalysisServer implements Runnable {
     public void run() {
         int portNumber = 50100;
         logger.info("Starting " + AnalysisServer.class.getName() + " on port " + portNumber + "!");
-        Server server = ServerBuilder.forPort(portNumber).addService(new RestrictedAnalyzerImp()).build();
+        Server server = ServerBuilder.forPort(portNumber).addService(new AnalyzerImp()).build();
         try {
             server.start();
         }
