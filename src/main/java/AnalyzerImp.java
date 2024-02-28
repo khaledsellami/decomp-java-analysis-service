@@ -1,12 +1,18 @@
 import com.decomp.analysis.*;
 import io.grpc.stub.StreamObserver;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import java.io.IOException;
 import java.util.List;
 
 public class AnalyzerImp extends AnalyzerGrpc.AnalyzerImplBase {
     private DataLoader dataLoader;
+    private static final Logger logger = LoggerFactory.getLogger(AnalyzerImp.class);
 
     public AnalyzerImp() {
         this.dataLoader = new DataLoader();
@@ -71,10 +77,30 @@ public class AnalyzerImp extends AnalyzerGrpc.AnalyzerImplBase {
         String appName = request.getAppName();
         String appRepo = request.getAppRepo();
         if (!dataLoader.exists(appName)){
-            RepoHandler repoHandler = new RepoHandler(appName, appRepo);
-            String appPath = repoHandler.getOrClone();
+            String appPath;
+            if (isURL(appRepo)) {
+                logger.debug("Using the link '" + appRepo + "' to clone the repository.");
+                RepoHandler repoHandler = new RepoHandler(appName, appRepo);
+                appPath = repoHandler.getOrClone();
+            }
+            else {
+                logger.debug("Using the path '" + appRepo + "' to analyze the repository.");
+                appPath = appRepo;
+            }
             dataLoader.analyze(appName, appPath);
         }
+    }
+
+    private Boolean isURL(String pathOrURL) {
+        String regex = "^(?:http|ftp)s?://" +                  // http:// or https://
+                "(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+(?:[A-Z]{2,6}\\.?|[A-Z0-9-]{2,}\\.?)|" +  // domain...
+                "localhost|" +                           // localhost...
+                "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})" +  // ...or ip
+                "(?::\\d+)?" +                          // optional port
+                "(?:/?|[/?]\\S+)$";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(pathOrURL);
+        return matcher.find();
     }
 
 }
