@@ -11,6 +11,10 @@ public class AnalysisServer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisServer.class);
     public void run() {
         int portNumber = 50100;
+        String envVar = System.getenv("SERVICE_JAVA_ANALYSIS_PORT");
+        if (envVar!=null){
+            portNumber = Integer.parseInt(envVar);
+        }
         logger.info("Starting " + AnalysisServer.class.getName() + " on port " + portNumber + "!");
         Server server = ServerBuilder.forPort(portNumber).addService(new AnalyzerImp()).build();
         try {
