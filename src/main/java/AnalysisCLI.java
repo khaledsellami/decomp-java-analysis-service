@@ -24,6 +24,12 @@ public class AnalysisCLI implements Runnable {
             description = "The output path to save the results in",
             required = false)
     private String outputPath;
+
+    @CommandLine.Option(
+            names = {"-t", "--test"},
+            description = "include test files",
+            required = false)
+    private boolean includeTest;
     private final DataLoader dataLoader;
 //    private final List<String> ALLOWED_APPS = Arrays.asList("petclinic", "plants");
 
@@ -42,7 +48,7 @@ public class AnalysisCLI implements Runnable {
             dataLoader.setOutputPath(outputPath);
         }
         if (!dataLoader.exists(appName)){
-            if (appPath == null){
+            if ((appPath == null)|(appPath.isEmpty())){
                 logger.info("Loading source code from default path!");
                 RepoHandler repoHandler = new RepoHandler(appName, "");
                 try{
@@ -69,7 +75,7 @@ public class AnalysisCLI implements Runnable {
                     logger.info("Loading source code from the given path!");
             }
             try{
-                dataLoader.analyze(appName, appPath);
+                dataLoader.analyze(appName, appPath, !includeTest);
             }
             catch(IOException e) {
                 logger.info("Encountered error when analyzing the source code: \"" + e.getMessage() + "\"!");

@@ -99,7 +99,7 @@ public class RestrictedAnalyzerImp extends AnalyzerGrpc.AnalyzerImplBase {
         if (!dataLoader.exists(appName)){
             RepoHandler repoHandler = new RepoHandler(appName, appRepo);
             String appPath = repoHandler.getOrClone();
-            dataLoader.analyze(appName, appPath);
+            dataLoader.analyze(appName, appPath, true);
         }
     }
 

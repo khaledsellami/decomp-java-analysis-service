@@ -113,13 +113,13 @@ public class DataLoader {
         return itExists;
     }
 
-    public boolean analyze(String appName, String appPath) throws IOException {
+    public boolean analyze(String appName, String appPath, boolean ignoreTest) throws IOException {
         if (exists(appName)){
             logger.info("Application " + appName + " exists! Exiting process.");
             return false;
         }
         logger.info("Application " + appName + " not found! Starting analysis.");
-        ASTParser astParser = new ASTParser(appPath, appName);
+        ASTParser astParser = new ASTParser(appPath, appName, ignoreTest);
         Triple<List<Class_>, List<Method_>, List<Invocation_>> analysisResults = astParser.analyze();
         List<Class_> classes = analysisResults.getLeft();
         List<Method_> methods = analysisResults.getMiddle();

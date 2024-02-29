@@ -76,9 +76,14 @@ public class AnalyzerImp extends AnalyzerGrpc.AnalyzerImplBase {
     private void loadApp(AstRequest request) throws IOException {
         String appName = request.getAppName();
         String appRepo = request.getAppRepo();
+        boolean includeTest = false;
+        if (request.HasField("includeTest"))
+            includeTest = request.getIncludeTest();
+        String envVar = System.getenv("INCLUDE_TEST");
+        includeTest = (includeTest|((envVar!=null)&(envVar.equals("true"))));
         if (!dataLoader.exists(appName)){
             String appPath;
-            if (isURL(appRepo)) {
+            if (isURL(appRepo)|appRepo.isEmpty()) {
                 logger.debug("Using the link '" + appRepo + "' to clone the repository.");
                 RepoHandler repoHandler = new RepoHandler(appName, appRepo);
                 appPath = repoHandler.getOrClone();
@@ -87,7 +92,7 @@ public class AnalyzerImp extends AnalyzerGrpc.AnalyzerImplBase {
                 logger.debug("Using the path '" + appRepo + "' to analyze the repository.");
                 appPath = appRepo;
             }
-            dataLoader.analyze(appName, appPath);
+            dataLoader.analyze(appName, appPath, !includeTest);
         }
     }
 

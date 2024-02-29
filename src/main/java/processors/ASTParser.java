@@ -20,6 +20,7 @@ public class ASTParser {
     private String repoPath;
 
     private String appName;
+    private boolean ignoreTest;
     private static Logger logger = LoggerFactory.getLogger(ASTParser.class);
 
     public String getRepoPath() {
@@ -39,9 +40,10 @@ public class ASTParser {
     }
 
 
-    public ASTParser(String repoPath, String appName) {
+    public ASTParser(String repoPath, String appName, boolean ignoreTest) {
         this.repoPath = repoPath;
         this.appName = appName;
+        this.ignoreTest = ignoreTest;
     }
 
     public static void find_src(String path, ArrayList<String> found, boolean ignoreTest){
@@ -73,7 +75,7 @@ public class ASTParser {
         Launcher launcher = new Launcher();
         launcher.getEnvironment().setOutputType(OutputType.NO_OUTPUT);
         ArrayList<String> input_paths = new ArrayList<>();
-        find_src(repoPath, input_paths, true);
+        find_src(repoPath, input_paths, this.ignoreTest);
         //launcher.getEnvironment().setIgnoreDuplicateDeclarations(true);
         for (String input_path : input_paths){
             logger.info("Adding PATH \"" + input_path + "\" as source");
@@ -97,5 +99,13 @@ public class ASTParser {
         return new ImmutableTriple<>(
                 typeProcessor.getObjects(), typeProcessor.getMethods(), invocationProcessor.getFailedMaps());
 
+    }
+
+    public boolean getIgnoreTest() {
+        return ignoreTest;
+    }
+
+    public void setIgnoreTest(boolean ignoreTest) {
+        this.ignoreTest = ignoreTest;
     }
 }

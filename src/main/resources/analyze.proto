@@ -6,7 +6,7 @@ option java_outer_classname = "AnalysisProto";
 option objc_class_prefix = "JAD";
 
 package analysis;
-
+//version 2
 
 service Analyzer {
 
@@ -80,6 +80,7 @@ message InvocationContainer {
 message AstRequest {
   string appName = 1;
   string appRepo = 2;
+  optional bool includeTest = 3;
 }
 
 message AstReply {
