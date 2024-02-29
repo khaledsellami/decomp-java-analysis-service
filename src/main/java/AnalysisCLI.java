@@ -32,7 +32,7 @@ public class AnalysisCLI implements Runnable {
 
     @CommandLine.Option(
             names = {"-d", "--distributed"},
-            description = "include test files")
+            description = "application has a distributed architecture.")
     private boolean isDistributed;
     private final DataLoader dataLoader;
 //    private final List<String> ALLOWED_APPS = Arrays.asList("petclinic", "plants");
@@ -52,7 +52,7 @@ public class AnalysisCLI implements Runnable {
             dataLoader.setOutputPath(outputPath);
         }
         if (!dataLoader.exists(appName)){
-            if ((appPath == null)|(appPath.isEmpty())){
+            if ((appPath == null)||(appPath.isEmpty())){
                 logger.info("Loading source code from default path!");
                 RepoHandler repoHandler = new RepoHandler(appName, "");
                 try{
