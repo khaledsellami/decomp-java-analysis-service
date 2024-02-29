@@ -47,23 +47,39 @@ public class ASTParser {
     }
 
     public static void find_src(String path, ArrayList<String> found, boolean ignoreTest){
+        // TODO redo
         File file = new File(path);
         if (file.isDirectory()){
             if ((path.endsWith("src"))||(path.endsWith("src/"))){
-                found.add(path+"/main/java");
+                if (ignoreTest){
+                    if (path.endsWith("src/"))
+                        found.add(path+"main/java");
+                    else
+                        found.add(path+"/main/java");
+                }
+                else
+                    found.add(path);
+
             }
             else {
-                if (ignoreTest&&((path.endsWith("test"))||(path.endsWith("test/")))){
-                    return;
+                if ((path.endsWith("test"))||(path.endsWith("test/"))){
+                    if (ignoreTest)
+                        return;
+                    if (path.endsWith("test/"))
+                        found.add(path+"java");
+                    else
+                        found.add(path+"/java");
                 }
-                try {
-                    Files.list(file.toPath())
-                            .forEach(p -> {
-                                find_src(p.toString(), found, ignoreTest);
-                            });
-                }
-                catch (IOException e){
-                    logger.info(e.toString());
+                else {
+                    try {
+                        Files.list(file.toPath())
+                                .forEach(p -> {
+                                    find_src(p.toString(), found, ignoreTest);
+                                });
+                    }
+                    catch (IOException e){
+                        logger.info(e.toString());
+                    }
                 }
             }
         }
