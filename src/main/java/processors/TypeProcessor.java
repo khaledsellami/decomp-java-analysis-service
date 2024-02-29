@@ -19,6 +19,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
     private List<Method_> methods;
     private Logger logger = LoggerFactory.getLogger(TypeProcessor.class);
     private String appName;
+    private String serviceName;
     public String getAppName() {
         return appName;
     }
@@ -43,18 +44,20 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
 
     }
 
-    public TypeProcessor(ArrayList<Class_> objects, ArrayList<Method_> methods) {
-        super();
-        this.objects = objects;
-        this.methods = methods;
-        this.appName = null;
-    }
-
     public TypeProcessor(ArrayList<Class_> objects, ArrayList<Method_> methods, String appName) {
         super();
         this.objects = objects;
         this.methods = methods;
         this.appName = appName;
+        this.serviceName = null;
+    }
+
+    public TypeProcessor(ArrayList<Class_> objects, ArrayList<Method_> methods, String appName, String serviceName) {
+        super();
+        this.objects = objects;
+        this.methods = methods;
+        this.appName = appName;
+        this.serviceName = serviceName;
     }
 
     @Override
@@ -193,6 +196,8 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             //methodName = ctType.getQualifiedName() + "::" + methodName;
             method_.setFullName(ctType.getQualifiedName() + "::" + method.getSignature());
             method_.setAppName(this.getAppName());
+            if (this.getServiceName()!=null)
+                method_.setServiceName(this.getServiceName());
             methods.add(method_.build());
         }
         List<String> classConstructors = new ArrayList<>();
@@ -241,6 +246,8 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                 //methodName = ctType.getQualifiedName() + "::" + methodName;
                 method_.setFullName(ctType.getQualifiedName() + "::" + constructor.getSignature());
                 method_.setAppName(this.getAppName());
+                if (this.getServiceName()!=null)
+                    method_.setServiceName(this.getServiceName());
                 methods.add(method_.build());
 
 
@@ -257,8 +264,18 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         object_.addAllConstructors(classConstructors);
         object_.addAllTextAndNames(textAndNames);
         object_.setAppName(this.getAppName());
+        if (this.getServiceName()!=null)
+            object_.setServiceName(this.getServiceName());
 
         objects.add(object_.build());
         //logger.info("Finished processing " + logText + " \"" + ctType.getQualifiedName() + "\"");
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }

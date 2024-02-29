@@ -81,6 +81,7 @@ message AstRequest {
   string appName = 1;
   string appRepo = 2;
   optional bool includeTest = 3;
+  optional bool isDistributed = 4;
 }
 
 message AstReply {

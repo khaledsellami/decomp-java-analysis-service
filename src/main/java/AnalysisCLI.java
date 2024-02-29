@@ -27,9 +27,13 @@ public class AnalysisCLI implements Runnable {
 
     @CommandLine.Option(
             names = {"-t", "--test"},
-            description = "include test files",
-            required = false)
+            description = "include test files")
     private boolean includeTest;
+
+    @CommandLine.Option(
+            names = {"-d", "--distributed"},
+            description = "include test files")
+    private boolean isDistributed;
     private final DataLoader dataLoader;
 //    private final List<String> ALLOWED_APPS = Arrays.asList("petclinic", "plants");
 
@@ -75,7 +79,7 @@ public class AnalysisCLI implements Runnable {
                     logger.info("Loading source code from the given path!");
             }
             try{
-                dataLoader.analyze(appName, appPath, !includeTest);
+                dataLoader.analyze(appName, appPath, !includeTest, isDistributed);
             }
             catch(IOException e) {
                 logger.info("Encountered error when analyzing the source code: \"" + e.getMessage() + "\"!");

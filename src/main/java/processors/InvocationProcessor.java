@@ -28,6 +28,7 @@ public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
     public int failedMatches = 0;
     private List<Invocation_> failedMaps = new ArrayList<>();
     private String appName;
+    private String serviceName;
 
     public String getAppName() {
         return appName;
@@ -37,16 +38,18 @@ public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
         this.appName = appName;
     }
 
-    public InvocationProcessor(List<Class_> objects, List<Method_> methods){
-        this.objects = objects;
-        this.methods = methods;
-        this.appName = null;
-    }
-
     public InvocationProcessor(List<Class_> objects, List<Method_> methods, String appName){
         this.objects = objects;
         this.methods = methods;
         this.appName = appName;
+        this.serviceName = null;
+    }
+
+    public InvocationProcessor(List<Class_> objects, List<Method_> methods, String appName, String serviceName){
+        this.objects = objects;
+        this.methods = methods;
+        this.appName = appName;
+        this.serviceName = serviceName;
     }
 
     public Integer findMethod(String methodName){
@@ -122,6 +125,8 @@ public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
         CtType invoker = pair.getRight();
         Invocation_.Builder invocation_ = Invocation_.newBuilder();
         invocation_.setAppName(this.getAppName());
+        if (this.getServiceName()!=null)
+            invocation_.setServiceName(this.getServiceName());
         if (invoked != null ){
 //            logger.info("Object \"" + invoker.getQualifiedName() + "\" has used \"" + invokedMethod.getSignature() +
 //                    "\" to invoke \"" + invoked.getQualifiedName() + "\"");
@@ -170,5 +175,13 @@ public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
 
     public void setFailedMaps(List<Invocation_> failedMaps) {
         this.failedMaps = failedMaps;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }

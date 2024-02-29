@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.ASTParser;
+import processors.DistributedASTParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,13 +114,28 @@ public class DataLoader {
         return itExists;
     }
 
-    public boolean analyze(String appName, String appPath, boolean ignoreTest) throws IOException {
+    public boolean analyze(String appName, String appPath) throws IOException
+    {
+        return analyze(appName, appPath, true, false);
+    }
+
+    public boolean analyze(String appName, String appPath, boolean ignoreTest) throws IOException
+    {
+        return analyze(appName, appPath, ignoreTest, false);
+    }
+
+    public boolean analyze(String appName, String appPath, boolean ignoreTest, boolean isDistributed) throws IOException
+    {
         if (exists(appName)){
             logger.info("Application " + appName + " exists! Exiting process.");
             return false;
         }
         logger.info("Application " + appName + " not found! Starting analysis.");
-        ASTParser astParser = new ASTParser(appPath, appName, ignoreTest);
+        ASTParser astParser;
+        if (isDistributed)
+            astParser = new DistributedASTParser(appPath, appName, ignoreTest);
+        else
+            astParser = new ASTParser(appPath, appName, ignoreTest);
         Triple<List<Class_>, List<Method_>, List<Invocation_>> analysisResults = astParser.analyze();
         List<Class_> classes = analysisResults.getLeft();
         List<Method_> methods = analysisResults.getMiddle();

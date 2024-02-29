@@ -76,11 +76,14 @@ public class AnalyzerImp extends AnalyzerGrpc.AnalyzerImplBase {
     private void loadApp(AstRequest request) throws IOException {
         String appName = request.getAppName();
         String appRepo = request.getAppRepo();
+        boolean isDistributed = false;
+        if (request.hasIsDistributed())
+            isDistributed = request.getIsDistributed();
         boolean includeTest = false;
-        if (request.HasField("includeTest"))
+        if (request.hasIncludeTest())
             includeTest = request.getIncludeTest();
         String envVar = System.getenv("INCLUDE_TEST");
-        includeTest = (includeTest|((envVar!=null)&(envVar.equals("true"))));
+        includeTest = (includeTest|((envVar!=null)&&(envVar.equals("true"))));
         if (!dataLoader.exists(appName)){
             String appPath;
             if (isURL(appRepo)|appRepo.isEmpty()) {
@@ -92,7 +95,7 @@ public class AnalyzerImp extends AnalyzerGrpc.AnalyzerImplBase {
                 logger.debug("Using the path '" + appRepo + "' to analyze the repository.");
                 appPath = appRepo;
             }
-            dataLoader.analyze(appName, appPath, !includeTest);
+            dataLoader.analyze(appName, appPath, !includeTest, isDistributed);
         }
     }
 
