@@ -3,7 +3,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "st_analyzer", synopsisSubcommandLabel = "COMMAND",
         subcommands = {AnalysisCLI.class, AnalysisServer.class},
-        mixinStandardHelpOptions = true, version = "1.2.1",
+        mixinStandardHelpOptions = true, version = "1.3.0",
         description = "Statically analyzes a monolithic application.")
 public class Main implements Runnable {
 

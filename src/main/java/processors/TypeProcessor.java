@@ -101,6 +101,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         object_.setIsAnonymous(ctType.isAnonymous());
         object_.setSimpleName(ctType.getSimpleName());
         object_.setFullName(ctType.getQualifiedName());
+        object_.setContent(ctType.toString());
         try {
             object_.setFilePath(ctType.getPosition().getFile().toString());
         }
@@ -155,6 +156,15 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             method_.setIsConstructor(false);
             method_.setSimpleName(method.getSimpleName());
             method_.setParentName(ctType.getQualifiedName());
+            // find if method contains source code in the repository or is inherited from a third party package
+            if (method.getPosition().isValidPosition()) {
+                method_.setContent(method.toString());
+                method_.setIsLocal(true);
+            }
+            else{
+                method_.setContent(method.toString());
+                method_.setIsLocal(false);
+            }
             // get return type
             returnTypes.add(method.getType().getQualifiedName());
             method_.setReturnType(method.getType().getQualifiedName());
@@ -206,6 +216,14 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                 CtConstructor constructor = (CtConstructor) c;
                 List<String> constructorTextAndNames = new ArrayList<>();
                 Method_.Builder method_ = Method_.newBuilder();
+                if (constructor.getPosition().isValidPosition()) {
+                    method_.setContent(constructor.toString());
+                    method_.setIsLocal(true);
+                }
+                else{
+                    method_.setContent(constructor.toString());
+                    method_.setIsLocal(false);
+                }
                 // start executable
                 method_.setIsLambda(false);
                 method_.setIsConstructor(true);
