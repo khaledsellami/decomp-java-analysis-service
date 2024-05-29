@@ -13,6 +13,7 @@ import spoon.OutputType;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,13 +50,11 @@ public class ASTParser {
     public static void find_src(String path, ArrayList<String> found, boolean ignoreTest){
         // TODO redo
         File file = new File(path);
+        Path srcPath = Path.of(path).resolve("main/java");
         if (file.isDirectory()){
-            if ((path.endsWith("src"))||(path.endsWith("src/"))){
+            if (((path.endsWith("src"))||(path.endsWith("src/")))&&(Files.exists(srcPath))){
                 if (ignoreTest){
-                    if (path.endsWith("src/"))
-                        found.add(path+"main/java");
-                    else
-                        found.add(path+"/main/java");
+                    found.add(srcPath.toString());
                 }
                 else
                     found.add(path);

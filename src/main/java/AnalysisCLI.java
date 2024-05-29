@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @CommandLine.Command(name = "analyze", mixinStandardHelpOptions = true,
-        description = "Statically analyzes a monolithic application through the client line interface.")
+        description = "Statically analyzes a monolithic application through the command line interface.")
 public class AnalysisCLI implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisCLI.class);
     @CommandLine.Parameters

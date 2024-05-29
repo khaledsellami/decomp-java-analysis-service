@@ -83,8 +83,13 @@ public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
 
     public Pair<String, CtType> detectInvoker(CtExecutable invokerExe, CtInvocation ctInvocation){
         if (invokerExe==null){
+            try {
             logger.error("Failed to find method for " +
                     ctInvocation.getOriginalSourceFragment().getSourcePosition().toString());
+            }
+            catch (Exception e0){
+                logger.error("Failed to find method and source location ");
+            }
             return new ImmutablePair<>("$$FIELDCALL$$", ctInvocation.getParent(CtType.class));
         }
         else {
