@@ -4,8 +4,8 @@ COPY pom.xml /usr/src/app/pom.xml
 RUN mvn -f /usr/src/app/pom.xml clean compile assembly:single
 
 FROM gcr.io/distroless/java AS DEPLOY
-COPY --from=build /usr/src/app/target/java-analysis-service-jar-with-dependencies.jar /usr/app/java-analysis-service.jar
+COPY --from=build /usr/src/app/target/DecompAnalysis.jar /usr/app/DecompAnalysis.jar
 #COPY data_prod/ /usr/app/data/
 WORKDIR /usr/app
 EXPOSE 50100
-ENTRYPOINT ["java","-jar","/usr/app/java-analysis-service.jar"]
+ENTRYPOINT ["java","-jar","/usr/app/DecompAnalysis.jar"]
