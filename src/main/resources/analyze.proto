@@ -6,7 +6,7 @@ option java_outer_classname = "AnalysisProto";
 option objc_class_prefix = "JAD";
 
 package analysis;
-//version 3
+//version 4
 
 service Analyzer {
 
@@ -36,6 +36,7 @@ message Class_ {
   string appName = 17;
   optional string serviceName = 18;
   optional string content = 19;
+  optional CodeSpan span = 20;
 }
 
 message Method_ {
@@ -55,6 +56,7 @@ message Method_ {
   optional string serviceName = 14;
   optional string content = 15;
   optional bool isLocal = 16;
+  optional CodeSpan span = 17;
 }
 
 message Invocation_ {
@@ -65,7 +67,19 @@ message Invocation_ {
   string invokedObject = 5;
   string appName = 6;
   optional string serviceName = 7;
+  optional CodeSpan span = 8;
 }
+
+message CodeSpan {
+  Position start = 1;
+  Position end = 2;
+}
+
+message Position {
+  int32 line = 1;
+  int32 column = 2;
+}
+
 
 message ClassContainer {
   repeated Class_ classes = 1;

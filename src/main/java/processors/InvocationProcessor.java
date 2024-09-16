@@ -1,6 +1,7 @@
 package processors;
 
 import com.decomp.analysis.Class_;
+import com.decomp.analysis.CodeSpan;
 import com.decomp.analysis.Invocation_;
 import com.decomp.analysis.Method_;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -19,6 +20,8 @@ import spoon.reflect.reference.CtTypeReference;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static processors.Utils.buildCodeSpan;
 
 public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
     private List<Class_> objects;
@@ -130,6 +133,10 @@ public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
         CtType invoker = pair.getRight();
         Invocation_.Builder invocation_ = Invocation_.newBuilder();
         invocation_.setAppName(this.getAppName());
+        CodeSpan span = buildCodeSpan(ctInvocation.getPosition());
+        if (span!=null){
+            invocation_.setSpan(span);
+        }
         if (this.getServiceName()!=null)
             invocation_.setServiceName(this.getServiceName());
         if (invoked != null ){

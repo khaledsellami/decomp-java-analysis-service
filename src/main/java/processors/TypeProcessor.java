@@ -1,6 +1,7 @@
 package processors;
 
 import com.decomp.analysis.Class_;
+import com.decomp.analysis.CodeSpan;
 import com.decomp.analysis.Method_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,8 @@ import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static processors.Utils.buildCodeSpan;
 
 public class TypeProcessor extends AbstractProcessor<CtType> {
     private List<Class_> objects;
@@ -102,6 +105,13 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         object_.setSimpleName(ctType.getSimpleName());
         object_.setFullName(ctType.getQualifiedName());
         object_.setContent(ctType.toString());
+        CodeSpan span = buildCodeSpan(ctType.getPosition());
+        if (span!=null){
+            object_.setSpan(span);
+        }
+        else {
+            logger.error("Span not found for " + ctType.getQualifiedName());
+        }
         try {
             object_.setFilePath(ctType.getPosition().getFile().toString());
         }
@@ -160,6 +170,13 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             if (method.getPosition().isValidPosition()) {
                 method_.setContent(method.toString());
                 method_.setIsLocal(true);
+                span = buildCodeSpan(method.getPosition());
+                if (span!=null){
+                    method_.setSpan(span);
+                }
+                else {
+                    logger.error("Span not found for " + method.getSimpleName() + " in " + ctType.getQualifiedName());
+                }
             }
             else{
                 method_.setContent(method.toString());
@@ -219,6 +236,13 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                 if (constructor.getPosition().isValidPosition()) {
                     method_.setContent(constructor.toString());
                     method_.setIsLocal(true);
+                    span = buildCodeSpan(constructor.getPosition());
+                    if (span!=null){
+                        method_.setSpan(span);
+                    }
+                    else {
+                        logger.error("Span not found for " + constructor.getSimpleName() + " in " + ctType.getQualifiedName());
+                    }
                 }
                 else{
                     method_.setContent(constructor.toString());
