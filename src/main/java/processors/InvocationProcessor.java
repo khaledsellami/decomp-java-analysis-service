@@ -133,7 +133,7 @@ public class InvocationProcessor extends AbstractProcessor<CtInvocation> {
         CtType invoker = pair.getRight();
         Invocation_.Builder invocation_ = Invocation_.newBuilder();
         invocation_.setAppName(this.getAppName());
-        CodeSpan span = buildCodeSpan(ctInvocation.getPosition());
+        CodeSpan span = buildCodeSpan(ctInvocation);
         if (span!=null){
             invocation_.setSpan(span);
         }

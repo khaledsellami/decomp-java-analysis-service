@@ -6,6 +6,7 @@ import com.decomp.analysis.Method_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spoon.processing.AbstractProcessor;
+import spoon.reflect.CtModel;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtFieldReference;
 import spoon.reflect.reference.CtTypeReference;
@@ -105,7 +106,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         object_.setSimpleName(ctType.getSimpleName());
         object_.setFullName(ctType.getQualifiedName());
         object_.setContent(ctType.toString());
-        CodeSpan span = buildCodeSpan(ctType.getPosition());
+        CodeSpan span = buildCodeSpan(ctType);
         if (span!=null){
             object_.setSpan(span);
         }
@@ -119,6 +120,8 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             logger.error("File not found for \"" + ctType.getQualifiedName() + "\"");
             object_.setFilePath("$$UNKNOWNPATH$$");
         }
+
+
         List<String> textAndNames = new ArrayList<>();
         textAndNames.add(ctType.getSimpleName());
         //logger.info("Adding referenced types for \"" + ctType.getSimpleName() + "\"");
@@ -170,7 +173,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
             if (method.getPosition().isValidPosition()) {
                 method_.setContent(method.toString());
                 method_.setIsLocal(true);
-                span = buildCodeSpan(method.getPosition());
+                span = buildCodeSpan(method);
                 if (span!=null){
                     method_.setSpan(span);
                 }
@@ -236,7 +239,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                 if (constructor.getPosition().isValidPosition()) {
                     method_.setContent(constructor.toString());
                     method_.setIsLocal(true);
-                    span = buildCodeSpan(constructor.getPosition());
+                    span = buildCodeSpan(constructor);
                     if (span!=null){
                         method_.setSpan(span);
                     }
