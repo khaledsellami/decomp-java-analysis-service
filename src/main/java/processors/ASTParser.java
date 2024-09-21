@@ -1,6 +1,7 @@
 package processors;
 
 import com.decomp.analysis.Class_;
+import com.decomp.analysis.Import_;
 import com.decomp.analysis.Invocation_;
 import com.decomp.analysis.Method_;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -84,7 +85,7 @@ public class ASTParser {
         }
     }
 
-    public Triple<List<Class_>, List<Method_>, List<Invocation_>> analyze() {
+    public ProcessedContainers analyze() {
         logger.info("Starting analysis for project " + appName);
         logger.info("Creating Spoon Launcher");
         Launcher launcher = new Launcher();
@@ -104,6 +105,9 @@ public class ASTParser {
         logger.info("Creating invocation processor");
         InvocationProcessor invocationProcessor = new InvocationProcessor(objects, methods, appName);
         launcher.addProcessor(invocationProcessor);
+        logger.info("Creating import processor");
+        ImportProcessor importProcessor = new ImportProcessor();
+        launcher.addProcessor(importProcessor);
         logger.info("Starting process");
         launcher.run();
         logger.info("Process finished successfully");
@@ -111,8 +115,10 @@ public class ASTParser {
         logger.info("Detected " + typeProcessor.getMethods().size() + " methods");
         logger.info("Found " + invocationProcessor.successfulMatches + " successful matches and " +
                 invocationProcessor.failedMatches + " failed matches");
-        return new ImmutableTriple<>(
-                typeProcessor.getObjects(), typeProcessor.getMethods(), invocationProcessor.getFailedMaps());
+        ProcessedContainers output = new ProcessedContainers(typeProcessor.getObjects(), typeProcessor.getMethods(),
+                invocationProcessor.getFailedMaps(), importProcessor.getImportsAsList());
+        logger.info("Detected " + output.imports.size() + " imports");
+        return output;
 
     }
 

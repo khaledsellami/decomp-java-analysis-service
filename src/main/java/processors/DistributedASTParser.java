@@ -50,7 +50,7 @@ public class DistributedASTParser extends ASTParser{
         return serviceName;
     }
 
-    public Triple<List<Class_>, List<Method_>, List<Invocation_>> analyze_one(String input_path, int it){
+    public ProcessedContainers analyze_one(String input_path, int it){
         Launcher launcher = new Launcher();
         launcher.getEnvironment().setOutputType(OutputType.NO_OUTPUT);
         String serviceName = findServiceName(input_path, it);
@@ -65,29 +65,34 @@ public class DistributedASTParser extends ASTParser{
         InvocationProcessor invocationProcessor = new InvocationProcessor(objects, methods, appName, serviceName);
         launcher.addProcessor(invocationProcessor);
         launcher.run();
-        return new ImmutableTriple<>(objects, methods, invocationProcessor.getFailedMaps());
+        ProcessedContainers output = new ProcessedContainers(typeProcessor.getObjects(), typeProcessor.getMethods(),
+                invocationProcessor.getFailedMaps(), new ArrayList<>());
+        return output;
     }
 
-    public Triple<List<Class_>, List<Method_>, List<Invocation_>> analyze() {
+    public ProcessedContainers analyze() {
         logger.info("Starting analysis for distributed project " + appName + " in path " + repoPath);
         ArrayList<String> input_paths = new ArrayList<>();
         find_src(repoPath, input_paths, this.ignoreTest);
-        ArrayList<Class_> allObjects = new ArrayList<>();
-        ArrayList<Method_> allMethods = new ArrayList<>();
-        ArrayList<Invocation_> allInvocations = new ArrayList<>();
+//        ArrayList<Class_> allObjects = new ArrayList<>();
+//        ArrayList<Method_> allMethods = new ArrayList<>();
+//        ArrayList<Invocation_> allInvocations = new ArrayList<>();
+        ProcessedContainers output = new ProcessedContainers();
         serviceNames = new ArrayList<>();
         int it = 0;
         for (String input_path : input_paths){
-            Triple<List<Class_>, List<Method_>, List<Invocation_>> analysisResults = analyze_one(input_path, it);
-            allObjects.addAll(analysisResults.getLeft());
-            allMethods.addAll(analysisResults.getMiddle());
-            allInvocations.addAll(analysisResults.getRight());
+            ProcessedContainers analysisResults = analyze_one(input_path, it);
+            output.classes.addAll(analysisResults.classes);
+            output.methods.addAll(analysisResults.methods);
+            output.invocations.addAll(analysisResults.invocations);
+            output.imports.addAll(analysisResults.imports);
             it++;
         }
         logger.info("Process finished successfully");
-        logger.info("Detected " + allObjects.size() + " classes and interfaces");
-        logger.info("Detected " + allMethods.size() + " methods");
-        logger.info("Found " + allInvocations.size() + " failed matches");
-        return new ImmutableTriple<>(allObjects, allMethods, allInvocations);
+        logger.info("Detected " + output.classes.size() + " classes and interfaces");
+        logger.info("Detected " + output.methods.size() + " methods");
+        logger.info("Found " + output.invocations.size() + " failed matches");
+        logger.info("Detected " + output.imports.size() + " imports");
+        return output;
     }
 }

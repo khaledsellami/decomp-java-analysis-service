@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.ASTParser;
 import processors.DistributedASTParser;
+import processors.ProcessedContainers;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +25,9 @@ public class DataLoader {
     private static final String classFileName = "typeData.json";
     private static final String methodFileName = "methodData.json";
     private static final String invocationFileName = "invocationData.json";
+    private static final String importFileName = "importData.json";
 
-    private void save(List<Class_> classes, List<Method_> methods, List<Invocation_> invocations,
+    private void save(List<Class_> classes, List<Method_> methods, List<Invocation_> invocations, List<Import_> imports,
                       String appName) throws IOException{
         logger.info("Converting class data to JSON");
         ClassContainer.Builder classContainer = ClassContainer.newBuilder().addAllClasses(classes);
@@ -67,6 +69,9 @@ public class DataLoader {
 //        }
 //        jsonInvocationsBuilder.append(']');
 //        String jsonInvocations = jsonInvocationsBuilder.toString();
+        logger.info("Converting import data to JSON");
+        ImportContainer.Builder importContainer = ImportContainer.newBuilder().addAllImports(imports);
+        String jsonImports = JsonFormat.printer().includingDefaultValueFields().print(importContainer);
         try {
             String savePath = Paths.get(outputPath, appName, classFileName).toString();
             logger.info("Saving type data in " + savePath);
@@ -91,6 +96,14 @@ public class DataLoader {
             file.createNewFile();
             out = new PrintWriter(file);
             out.println(jsonInvocations);
+            out.close();
+            savePath = Paths.get(outputPath, appName, importFileName).toString();
+            logger.info("Saving import data in " + savePath);
+            file = new File(savePath);
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            out = new PrintWriter(file);
+            out.println(jsonImports);
             out.close();
         }
         catch (IOException e){
@@ -136,12 +149,16 @@ public class DataLoader {
             astParser = new DistributedASTParser(appPath, appName, ignoreTest);
         else
             astParser = new ASTParser(appPath, appName, ignoreTest);
-        Triple<List<Class_>, List<Method_>, List<Invocation_>> analysisResults = astParser.analyze();
-        List<Class_> classes = analysisResults.getLeft();
-        List<Method_> methods = analysisResults.getMiddle();
-        List<Invocation_> invocations = analysisResults.getRight();
+        ProcessedContainers analysisResults = astParser.analyze();
+//        List<Class_> classes = analysisResults.getLeft();
+//        List<Method_> methods = analysisResults.getMiddle();
+//        List<Invocation_> invocations = analysisResults.getRight();
+        List<Class_> classes = analysisResults.getClasses();
+        List<Method_> methods = analysisResults.getMethods();
+        List<Invocation_> invocations = analysisResults.getInvocations();
+        List<Import_> imports = analysisResults.getImports();
         logger.info("Saving data for Application " + appName + " !");
-        save(classes, methods, invocations, appName);
+        save(classes, methods, invocations, imports, appName);
         return true;
     }
 

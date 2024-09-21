@@ -70,6 +70,33 @@ message Invocation_ {
   optional CodeSpan span = 8;
 }
 
+message Import_ {
+  string filePath = 1;
+  string importString = 2;
+  CodeSpan span = 3;
+  ImportKind importKind = 4;
+  bool isLocal = 5;
+  repeated ImportUsage usages = 6;
+  optional string importedPackage = 7;
+  optional string importedClass = 8;
+  optional string importedFieldOrMethod = 9;
+  repeated ImportUsage allReferences = 10;
+}
+
+enum ImportKind {
+  ALL_STATIC_MEMBERS = 0;
+  ALL_TYPES = 1;
+  FIELD_OR_METHOD = 2;
+  TYPE = 3;
+  UNRESOLVED = 5;
+}
+
+message ImportUsage {
+  string className = 1;
+  optional CodeSpan span = 2;
+  optional string methodName = 3;
+}
+
 message CodeSpan {
   Position start = 1;
   Position end = 2;
@@ -91,6 +118,10 @@ message MethodContainer {
 
 message InvocationContainer {
   repeated Invocation_ invocations = 1;
+}
+
+message ImportContainer {
+  repeated Import_ imports = 1;
 }
 
 
