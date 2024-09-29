@@ -215,16 +215,21 @@ public class ImportProcessor extends AbstractProcessor<CtType> {
         String packageName;
         String className;
         String memberName;
+        String filePath = "";
         // Resolve the import statement to find its kind and imported item details
         Pair<ImportKind, Triple<String, String, String>> resolvedImport = resolveImport(importString);
         importKind = resolvedImport.getLeft();
         packageName = resolvedImport.getRight().getLeft();
         className = resolvedImport.getRight().getMiddle();
         memberName = resolvedImport.getRight().getRight();
+        if (ctImport.getPosition() != null) {
+            filePath = ctImport.getPosition().getFile().getPath();
+        }
         // verify if the package and class are local
         boolean isLocal = (className.isEmpty() && findPackage(packageName)) || (!className.isEmpty() && findClass(packageName + "." + className));
         // Create the Import_ object
         Import_.Builder import_ = Import_.newBuilder();
+        import_.setFilePath(filePath);
         import_.setImportString(importString);
         import_.setImportKind(importKind);
         import_.setImportedPackage(packageName);
