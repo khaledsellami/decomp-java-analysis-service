@@ -1,5 +1,6 @@
 # Decomp-Java-Analysis-Service
 
+Warning: This is a downgrade from the main version which was developed for a research objective. Please avoid using it if not necessary.
 Decomp-Java-Analysis-Service is an AST-parser for generating metadata about the classes and methods declared in a given Java source code for the purpose of monolith to microservice decomposition.
 
 ## Description

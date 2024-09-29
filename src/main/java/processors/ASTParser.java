@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,8 @@ public class ASTParser {
     public static void find_src(String path, ArrayList<String> found, boolean ignoreTest){
         // TODO redo
         File file = new File(path);
-        Path srcPath = Path.of(path).resolve("main/java");
+//        Path srcPath = Path.of(path).resolve("main/java");
+        Path srcPath = Paths.get(path).resolve("main/java");
         if (file.isDirectory()){
             if (((path.endsWith("src"))||(path.endsWith("src/")))&&(Files.exists(srcPath))){
                 if (ignoreTest){
