@@ -337,11 +337,6 @@ public class ImportProcessor extends AbstractProcessor<CtType> {
 
     @Override
     public void process(CtType ctType) {
-        System.out.println("Name: " + ctType.getQualifiedName());
-        CtPackage ctPackage = ctType.getPackage();
-        if (ctPackage != null) {
-            System.out.println("Package: " + ctPackage.getQualifiedName());
-        }
         File file = ctType.getPosition().getFile();
         parseImports(ctType, file);
 
