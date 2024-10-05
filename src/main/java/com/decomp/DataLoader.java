@@ -1,11 +1,13 @@
+package com.decomp;
+
 import com.decomp.analysis.*;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import processors.ASTParser;
-import processors.DistributedASTParser;
+import com.decomp.processors.ASTParser;
+import com.decomp.processors.DistributedASTParser;
 
 import java.io.File;
 import java.io.IOException;

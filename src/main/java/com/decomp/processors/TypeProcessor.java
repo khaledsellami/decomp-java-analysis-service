@@ -1,4 +1,4 @@
-package processors;
+package com.decomp.processors;
 
 import com.decomp.analysis.Class_;
 import com.decomp.analysis.Method_;

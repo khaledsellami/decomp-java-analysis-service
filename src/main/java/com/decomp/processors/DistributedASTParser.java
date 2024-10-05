@@ -1,4 +1,4 @@
-package processors;
+package com.decomp.processors;
 
 import com.decomp.analysis.Class_;
 import com.decomp.analysis.Invocation_;
@@ -10,9 +10,6 @@ import org.slf4j.LoggerFactory;
 import spoon.Launcher;
 import spoon.OutputType;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;

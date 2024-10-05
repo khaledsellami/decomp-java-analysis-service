@@ -1,3 +1,5 @@
+package com.decomp;
+
 import com.decomp.analysis.*;
 import io.grpc.stub.StreamObserver;
 

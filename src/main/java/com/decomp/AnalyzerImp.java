@@ -1,6 +1,7 @@
+package com.decomp;
+
 import com.decomp.analysis.*;
 import io.grpc.stub.StreamObserver;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
