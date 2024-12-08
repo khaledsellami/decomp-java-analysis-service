@@ -3,24 +3,17 @@ package processors;
 import com.decomp.analysis.Class_;
 import com.decomp.analysis.CodeSpan;
 import com.decomp.analysis.Method_;
-import com.decomp.analysis.Import_;
-import com.decomp.analysis.ImportKind;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spoon.processing.AbstractProcessor;
-import spoon.reflect.CtModel;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtFieldReference;
-import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.reference.CtVariableReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static processors.Utils.buildCodeSpan;
 
@@ -93,7 +86,6 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                     logger.error(
                             "encountered cast error in line " + ctType.getOriginalSourceFragment().getSourcePosition()
                     );
-                    return;
                 }
             }
         }
