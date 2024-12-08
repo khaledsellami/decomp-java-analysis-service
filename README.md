@@ -13,7 +13,7 @@ Detailed information about the metadata can be found in the `src/main/java/resou
 
 This tool was built on top of the [Spoon](https://spoon.gforge.inria.fr/) source code analysis library. 
 
-The Decomp-Java-Analysis-Service is a part of a research project that aims to provide a standarized framework for analyzing monolithic applications, decomposing them into microservices, visualizing the decompositions, evaluating the decompositions and refactoring the monolith.
+[//]: # (The Decomp-Java-Analysis-Service is a part of a research project that aims to provide a standarized framework for analyzing monolithic applications, decomposing them into microservices, visualizing the decompositions, evaluating the decompositions and refactoring the monolith.)
 
 
 ## Getting Started
