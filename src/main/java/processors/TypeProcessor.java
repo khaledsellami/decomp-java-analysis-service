@@ -6,6 +6,7 @@ import com.decomp.analysis.Method_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spoon.processing.AbstractProcessor;
+import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtFieldReference;
 import spoon.reflect.reference.CtTypeReference;
@@ -123,15 +124,29 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         }
     }
 
+    private List<String> getAllGenerics(CtTypeReference ctTypeReference){
+        List<String> generics = new ArrayList<>();
+        if (!ctTypeReference.getActualTypeArguments().isEmpty()) {
+            for (CtTypeReference<?> t : ctTypeReference.getActualTypeArguments()) {
+                generics.add(t.getQualifiedName());
+            }
+        }
+        return generics;
+    }
+
     private void parseFields(CtType ctType, Class_.Builder object_, List<String> textAndNames) {
         List<String> fieldTypes = new ArrayList<>(ctType.getFields().size());
+        List<String> genericTypes = new ArrayList<>();
         for (Object f: ctType.getAllFields()){
             CtFieldReference field = (CtFieldReference) f;
             fieldTypes.add(field.getType().getQualifiedName());
             textAndNames.add(field.getSimpleName());
             //f.getReferencedTypes().forEach(type -> fieldTypes.add(type.getQualifiedName()));
+            CtTypeReference<?> fieldType = field.getType();
+            genericTypes.addAll(getAllGenerics(fieldType));
         }
         object_.addAllFieldTypes(fieldTypes);
+        object_.addAllGenericInFieldTypes(genericTypes);
     }
 
     private void parseNestedTypes(CtType ctType, Class_.Builder object_, List<String> textAndNames) {
@@ -158,6 +173,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                              List<String> parameterTypes, List<String> returnTypes, List<String> classMethods,
                              boolean isConstructor) {
         List<String> methodTextAndNames = new ArrayList<>();
+        List<String> genericInReferences = new ArrayList<>();
         // start executable
         method_.setIsLambda(false);
         method_.setIsConstructor(isConstructor);
@@ -179,6 +195,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         else {
             returnTypes.add(method.getType().getQualifiedName());
             method_.setReturnType(method.getType().getQualifiedName());
+            genericInReferences.addAll(getAllGenerics(method.getType()));
         }
         // get parameters
         List<String> parameters = new ArrayList<>();
@@ -186,11 +203,13 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         for (Object p:method.getParameters()){
             CtParameter parameter = (CtParameter) p;
             //methodName += "::" + parameter.getSimpleName();
-            parameterTypes.add(parameter.getType().getQualifiedName());
-            methodParameterTypes.add(parameter.getType().getQualifiedName());
+            CtTypeReference<?> parameterType = parameter.getType();
+            parameterTypes.add(parameterType.getQualifiedName());
+            methodParameterTypes.add(parameterType.getQualifiedName());
             parameters.add(parameter.getSimpleName());
             textAndNames.add(parameter.getSimpleName());
             methodTextAndNames.add(parameter.getSimpleName());
+            genericInReferences.addAll(getAllGenerics(parameterType));
         }
         method_.addAllParameterNames(parameters);
         method_.addAllParameterTypes(methodParameterTypes);
@@ -215,6 +234,18 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                     methodTextAndNames.add(((CtVariableReference) var).getSimpleName());
                 });
         method_.addAllTextAndNames(methodTextAndNames);
+        // add all local variable types
+        List<String> variableTypes = new ArrayList<>();
+        for (CtElement lv : method.getBody().getElements(e -> e instanceof CtLocalVariable)) {
+            CtLocalVariable<?> localVariable = (CtLocalVariable<?>) lv;
+            // Get the variable name and type
+            CtTypeReference<?> variableType = localVariable.getType();
+            // Store the variable name and its qualified type name
+            variableTypes.add(variableType.getQualifiedName());
+            genericInReferences.addAll(getAllGenerics(variableType));
+        }
+        method_.addAllVariableTypes(variableTypes);
+        method_.addAllGenericInReferencedTypes(genericInReferences);
         //methodName = ctType.getQualifiedName() + "::" + methodName;
         method_.setFullName(ctType.getQualifiedName() + "::" + method.getSignature());
         method_.setAppName(this.getAppName());

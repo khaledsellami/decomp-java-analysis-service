@@ -37,6 +37,8 @@ message Class_ {
   optional string serviceName = 18;
   optional string content = 19;
   optional CodeSpan span = 20;
+  repeated string GenericInFieldTypes = 21;
+  repeated string VariableTypes = 22;
 }
 
 message Method_ {
@@ -57,6 +59,8 @@ message Method_ {
   optional string content = 15;
   optional bool isLocal = 16;
   optional CodeSpan span = 17;
+  repeated string VariableTypes = 18;
+  repeated string GenericInReferencedTypes = 19;
 }
 
 message Invocation_ {
