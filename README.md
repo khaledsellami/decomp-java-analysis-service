@@ -90,6 +90,11 @@ Khaled Sellami - [khaledsellami](https://github.com/khaledsellami) - khaled.sell
 
 * 1.3.1
     * Initial Documented Release
+* 1.4.0
+    * Added tracking for source code spans (line numbers and columns for each source code sample).
+    * Added analysis for imports and package declarations. The new details are saved in the file `importData.json`. 
+* 1.5.0
+    * Added detailed analysis for declared types. The objective of the additional analysis is to track the details that are needed for generating DTOs of types. The new details are saved in the file `dtoData.json`.
 
 ## License
 
