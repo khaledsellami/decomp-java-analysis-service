@@ -1,13 +1,10 @@
 package processors;
 
 import com.decomp.analysis.Class_;
-import com.decomp.analysis.Import_;
-import com.decomp.analysis.Invocation_;
 import com.decomp.analysis.Method_;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import refactor.processors.DTOProcessor;
 import spoon.Launcher;
 import spoon.OutputType;
 
@@ -16,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ASTParser {
     private String repoPath;
@@ -108,6 +104,9 @@ public class ASTParser {
         logger.info("Creating import processor");
         ImportProcessor importProcessor = new ImportProcessor();
         launcher.addProcessor(importProcessor);
+        logger.info("Creating DTO processor");
+        DTOProcessor dtoProcessor = new DTOProcessor();
+        launcher.addProcessor(dtoProcessor);
         logger.info("Starting process");
         launcher.run();
         logger.info("Process finished successfully");
@@ -116,7 +115,7 @@ public class ASTParser {
         logger.info("Found " + invocationProcessor.successfulMatches + " successful matches and " +
                 invocationProcessor.failedMatches + " failed matches");
         ProcessedContainers output = new ProcessedContainers(typeProcessor.getObjects(), typeProcessor.getMethods(),
-                invocationProcessor.getFailedMaps(), importProcessor.getImportsAsList());
+                invocationProcessor.getFailedMaps(), importProcessor.getImportsAsList(), dtoProcessor.getDTOs());
         logger.info("Detected " + output.imports.size() + " imports");
         return output;
 

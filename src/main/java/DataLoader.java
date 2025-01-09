@@ -1,4 +1,7 @@
 import com.decomp.analysis.*;
+import com.decomp.refactor.ClassDTO;
+import com.decomp.refactor.ClassDTOContainer;
+import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -26,6 +29,27 @@ public class DataLoader {
     private static final String methodFileName = "methodData.json";
     private static final String invocationFileName = "invocationData.json";
     private static final String importFileName = "importData.json";
+    private static final String DTOFileName = "dtoData.json";
+
+    private void saveRefact(List<ClassDTO> DTOs, String appName) throws IOException {
+        logger.info("Converting import DTO data to JSON");
+        ClassDTOContainer.Builder dtoContainer = ClassDTOContainer.newBuilder().addAllDtos(DTOs);
+        String jsonDTOs = JsonFormat.printer().includingDefaultValueFields().print(dtoContainer);
+        try {
+            String savePath = Paths.get(outputPath, appName, DTOFileName).toString();
+            logger.info("Saving DTO data in " + savePath);
+            File file = new File(savePath);
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            PrintWriter out = new PrintWriter(file);
+            out.println(jsonDTOs);
+            out.close();
+        }
+        catch (IOException e){
+            logger.error("Failed to save JSON data");
+            throw e;
+        }
+    }
 
     private void save(List<Class_> classes, List<Method_> methods, List<Invocation_> invocations, List<Import_> imports,
                       String appName) throws IOException{
@@ -157,8 +181,10 @@ public class DataLoader {
         List<Method_> methods = analysisResults.getMethods();
         List<Invocation_> invocations = analysisResults.getInvocations();
         List<Import_> imports = analysisResults.getImports();
+        List<ClassDTO> DTOs = analysisResults.getDTOs();
         logger.info("Saving data for Application " + appName + " !");
         save(classes, methods, invocations, imports, appName);
+        saveRefact(DTOs, appName);
         return true;
     }
 

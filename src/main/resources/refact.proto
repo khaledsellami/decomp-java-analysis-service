@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.decomp.refactor";
+option java_outer_classname = "RefactorProto";
+option objc_class_prefix = "JRD";
+
+package refactor;
+//version 0
+
+service Refactor {
+//
+//  rpc generateDTO (ClassID) returns (ClassDTO) {};
+//  rpc getDTOs (DTORequest) returns (stream ClassDTO) {};
+}
+
+message DTORequest {
+  string appName = 1;
+}
+
+message ClassID {
+  string fullName = 1;
+  string appName = 2;
+}
+
+message ClassDTO {
+  string fullName = 1;
+  repeated Field fields = 2;
+}
+
+message Field {
+  string parentName = 1;
+  string variableName = 2;
+  FieldType type = 3;
+}
+
+message FieldType {
+  string fullName = 1;
+  string simpleName = 2;
+  bool isSerializable = 3;
+  TypeSource typeSource = 4;
+  repeated FieldType genericTypes = 5;
+}
+
+enum TypeSource {
+  LOCAL = 0;
+  STANDARD = 1;
+  LIBRARY = 2;
+  PRIMITIVE = 3;
+  UNKNOWN = 4;
+}
+
+message ClassDTOContainer {
+  repeated ClassDTO dtos = 1;
+}

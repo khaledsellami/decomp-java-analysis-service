@@ -4,6 +4,7 @@ import com.decomp.analysis.Class_;
 import com.decomp.analysis.Method_;
 import com.decomp.analysis.Invocation_;
 import com.decomp.analysis.Import_;
+import com.decomp.refactor.ClassDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class ProcessedContainers {
     public List<Method_> methods;
     public List<Invocation_> invocations;
     public List<Import_> imports;
+    public List<ClassDTO> DTOs;
 
     public ProcessedContainers() {
         classes = new ArrayList<>();
@@ -21,11 +23,13 @@ public class ProcessedContainers {
         imports = new ArrayList<>();
     }
 
-    public ProcessedContainers(List<Class_> classes, List<Method_> methods, List<Invocation_> invocations, List<Import_> imports) {
+    public ProcessedContainers(List<Class_> classes, List<Method_> methods, List<Invocation_> invocations, List<Import_> imports,
+                               List<ClassDTO> DTOs) {
         this.classes = classes;
         this.methods = methods;
         this.invocations = invocations;
         this.imports = imports;
+        this.DTOs = DTOs;
     }
 
     public List<Class_> getClasses() {
@@ -42,6 +46,9 @@ public class ProcessedContainers {
 
     public List<Import_> getImports() {
         return imports;
+    }
+    public List<ClassDTO> getDTOs() {
+        return DTOs;
     }
 
 }

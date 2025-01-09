@@ -1,20 +1,14 @@
 package processors;
 
 import com.decomp.analysis.Class_;
-import com.decomp.analysis.Invocation_;
 import com.decomp.analysis.Method_;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import refactor.processors.DTOProcessor;
 import spoon.Launcher;
 import spoon.OutputType;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,9 +58,11 @@ public class DistributedASTParser extends ASTParser{
         launcher.addProcessor(typeProcessor);
         InvocationProcessor invocationProcessor = new InvocationProcessor(objects, methods, appName, serviceName);
         launcher.addProcessor(invocationProcessor);
+        DTOProcessor dtoProcessor = new DTOProcessor();
+        launcher.addProcessor(dtoProcessor);
         launcher.run();
         ProcessedContainers output = new ProcessedContainers(typeProcessor.getObjects(), typeProcessor.getMethods(),
-                invocationProcessor.getFailedMaps(), new ArrayList<>());
+                invocationProcessor.getFailedMaps(), new ArrayList<>(), dtoProcessor.getDTOs());
         return output;
     }
 

@@ -19,11 +19,11 @@ import java.util.*;
 import static processors.Utils.buildCodeSpan;
 
 public class TypeProcessor extends AbstractProcessor<CtType> {
-    private List<Class_> objects;
-    private List<Method_> methods;
-    private Logger logger = LoggerFactory.getLogger(TypeProcessor.class);
-    private String appName;
-    private String serviceName;
+    protected List<Class_> objects;
+    protected List<Method_> methods;
+    protected Logger logger = LoggerFactory.getLogger(TypeProcessor.class);
+    protected String appName;
+    protected String serviceName;
     public String getAppName() {
         return appName;
     }
@@ -64,7 +64,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         this.serviceName = serviceName;
     }
 
-    private boolean setIsAnnotationAndInterface(Class_.Builder object_, CtType ctType) {
+    protected boolean setIsAnnotationAndInterface(Class_.Builder object_, CtType ctType) {
         boolean isAnnotation = false;
         String logText = "class";
         CtClass ctClass;
@@ -93,7 +93,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         return isAnnotation;
     }
 
-    private void setSpan(CtType ctType, Class_.Builder object_){
+    protected void setSpan(CtType ctType, Class_.Builder object_){
         CodeSpan span = buildCodeSpan(ctType);
         if (span!=null){
             object_.setSpan(span);
@@ -103,7 +103,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         }
     }
 
-    private void setSpan(CtExecutable method, Method_.Builder method_, CtType ctType){
+    protected void setSpan(CtExecutable method, Method_.Builder method_, CtType ctType){
         CodeSpan span = buildCodeSpan(method);
         if (span!=null){
             method_.setSpan(span);
@@ -113,7 +113,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         }
     }
 
-    private void addFilePath(CtType ctType, Class_.Builder object_) {
+    protected void addFilePath(CtType ctType, Class_.Builder object_) {
         File file = ctType.getPosition().getFile();
         if (file!=null){
             object_.setFilePath(file.toString());
@@ -124,7 +124,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         }
     }
 
-    private List<String> getAllGenerics(CtTypeReference ctTypeReference){
+    protected List<String> getAllGenerics(CtTypeReference ctTypeReference){
         List<String> generics = new ArrayList<>();
         if (!ctTypeReference.getActualTypeArguments().isEmpty()) {
             for (CtTypeReference<?> t : ctTypeReference.getActualTypeArguments()) {
@@ -134,7 +134,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         return generics;
     }
 
-    private void parseFields(CtType ctType, Class_.Builder object_, List<String> textAndNames) {
+    protected void parseFields(CtType ctType, Class_.Builder object_, List<String> textAndNames) {
         List<String> fieldTypes = new ArrayList<>(ctType.getFields().size());
         List<String> genericTypes = new ArrayList<>();
         for (Object f: ctType.getAllFields()){
@@ -149,7 +149,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         object_.addAllGenericInFieldTypes(genericTypes);
     }
 
-    private void parseNestedTypes(CtType ctType, Class_.Builder object_, List<String> textAndNames) {
+    protected void parseNestedTypes(CtType ctType, Class_.Builder object_, List<String> textAndNames) {
         List<String> nestedTypes = new ArrayList<>(ctType.getNestedTypes().size());
         for (Object t: ctType.getNestedTypes()){
             CtType type = (CtType) t;
@@ -159,7 +159,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         object_.addAllNestedTypes(nestedTypes);
     }
 
-    private void parseInheritedTypes(CtType ctType, Class_.Builder object_) {
+    protected void parseInheritedTypes(CtType ctType, Class_.Builder object_) {
         List<String> inheritedTypes = new ArrayList<>();
         CtTypeReference superClass = ctType.getSuperclass();
         if (superClass != null){
@@ -169,7 +169,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         object_.addAllInheritedTypes(inheritedTypes);
     }
 
-    private void parseMethod(CtExecutable method, Method_.Builder method_, CtType ctType, List<String> textAndNames,
+    protected void parseMethod(CtExecutable method, Method_.Builder method_, CtType ctType, List<String> textAndNames,
                              List<String> parameterTypes, List<String> returnTypes, List<String> classMethods,
                              boolean isConstructor) {
         List<String> methodTextAndNames = new ArrayList<>();
