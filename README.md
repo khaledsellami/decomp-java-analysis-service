@@ -81,6 +81,7 @@ In addition, you can get more information about the data exposed by the parser s
 ## Roadmap
 * Improve the documentation of this module
 * Add support for Git repository managers (GitLab, Bitbucket, etc.)
+* Record the project and tool metadata in the analysis results
 
 ## Authors
 
