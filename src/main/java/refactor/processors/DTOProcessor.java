@@ -32,4 +32,7 @@ public class DTOProcessor extends AbstractProcessor<CtType<?>> {
     public List<ClassDTO> getDTOs() {
         return DTOs;
     }
+    public DTOAnalyzer getAnalyzer() {
+        return analyzer;
+    }
 }

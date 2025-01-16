@@ -5,6 +5,7 @@ import com.decomp.refactor.FieldType;
 import com.decomp.refactor.TypeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import refactor.Utils;
 import spoon.reflect.declaration.CtType;
 
 import com.decomp.refactor.ClassDTO;
@@ -25,9 +26,15 @@ public class DTOAnalyzer {
     }
 
     public FieldType getFieldType(CtTypeReference<?> ctTypeReference) {
-        return parsedTypes.getOrDefault(ctTypeReference.getQualifiedName(), parseFieldType(ctTypeReference));
+        return parsedTypes.getOrDefault(ctTypeReference.getQualifiedName(), parseFieldType(ctTypeReference,
+                ctTypeReference.getQualifiedName()));
     }
 
+    public FieldType getFieldTypeWithGenerics(CtTypeReference<?> ctTypeReference) {
+        String qualifiedName = Utils.getQualifiedNameWithGenerics(ctTypeReference);
+        System.out.println(qualifiedName);
+        return parsedTypes.getOrDefault(qualifiedName, parseFieldType(ctTypeReference, qualifiedName));
+    }
     private TypeSource getTypeSource(CtTypeReference<?> ctTypeReference) {
         // Check if the type is a primitive type (int, boolean, etc.)
         if (ctTypeReference.isPrimitive())
@@ -83,8 +90,8 @@ public class DTOAnalyzer {
         return genericTypes;
     }
 
-    private FieldType parseFieldType(CtTypeReference<?> ctTypeReference) {
-        String typeName = ctTypeReference.getQualifiedName();
+    private FieldType parseFieldType(CtTypeReference<?> ctTypeReference, String typeName) {
+//        String typeName = ctTypeReference.getQualifiedName();
         if (parsedTypes.containsKey(typeName)) {
             return parsedTypes.get(typeName);
         }
