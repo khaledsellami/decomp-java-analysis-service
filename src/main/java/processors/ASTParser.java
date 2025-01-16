@@ -5,6 +5,7 @@ import com.decomp.analysis.Method_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import refactor.processors.DTOProcessor;
+import refactor.processors.MethodAPIProcessor;
 import spoon.Launcher;
 import spoon.OutputType;
 
@@ -107,6 +108,9 @@ public class ASTParser {
         logger.info("Creating DTO processor");
         DTOProcessor dtoProcessor = new DTOProcessor();
         launcher.addProcessor(dtoProcessor);
+        logger.info("Creating method API processor");
+        MethodAPIProcessor methodAPIProcessor = new MethodAPIProcessor(dtoProcessor.getAnalyzer());
+        launcher.addProcessor(methodAPIProcessor);
         logger.info("Starting process");
         launcher.run();
         logger.info("Process finished successfully");
@@ -115,7 +119,8 @@ public class ASTParser {
         logger.info("Found " + invocationProcessor.successfulMatches + " successful matches and " +
                 invocationProcessor.failedMatches + " failed matches");
         ProcessedContainers output = new ProcessedContainers(typeProcessor.getObjects(), typeProcessor.getMethods(),
-                invocationProcessor.getFailedMaps(), importProcessor.getImportsAsList(), dtoProcessor.getDTOs());
+                invocationProcessor.getFailedMaps(), importProcessor.getImportsAsList(), dtoProcessor.getDTOs(),
+                methodAPIProcessor.getApiTypesMapValues());
         logger.info("Detected " + output.imports.size() + " imports");
         return output;
 

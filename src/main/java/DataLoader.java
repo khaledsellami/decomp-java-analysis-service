@@ -1,6 +1,7 @@
 import com.decomp.analysis.*;
 import com.decomp.refactor.ClassDTO;
 import com.decomp.refactor.ClassDTOContainer;
+import com.decomp.refactor.extension.MethodAPITypesContainer;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.FileUtils;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import processors.ASTParser;
 import processors.DistributedASTParser;
 import processors.ProcessedContainers;
+import com.decomp.refactor.extension.MethodAPITypes;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,11 +32,15 @@ public class DataLoader {
     private static final String invocationFileName = "invocationData.json";
     private static final String importFileName = "importData.json";
     private static final String DTOFileName = "dtoData.json";
+    private static final String methodAPITypesName = "apiTypesData.json";
 
-    private void saveRefact(List<ClassDTO> DTOs, String appName) throws IOException {
+    private void saveRefact(String appName, List<ClassDTO> DTOs, List<MethodAPITypes> methodAPITypes) throws IOException {
         logger.info("Converting import DTO data to JSON");
         ClassDTOContainer.Builder dtoContainer = ClassDTOContainer.newBuilder().addAllDtos(DTOs);
         String jsonDTOs = JsonFormat.printer().includingDefaultValueFields().print(dtoContainer);
+        MethodAPITypesContainer.Builder methodAPITypesContainer = MethodAPITypesContainer.newBuilder().addAllApiTypes(
+                methodAPITypes);
+        String jsonMethodAPITypes = JsonFormat.printer().includingDefaultValueFields().print(methodAPITypesContainer);
         try {
             String savePath = Paths.get(outputPath, appName, DTOFileName).toString();
             logger.info("Saving DTO data in " + savePath);
@@ -43,6 +49,15 @@ public class DataLoader {
             file.createNewFile();
             PrintWriter out = new PrintWriter(file);
             out.println(jsonDTOs);
+            out.close();
+            // Saving method API types
+            savePath = Paths.get(outputPath, appName, methodAPITypesName).toString();
+            logger.info("Saving methodAPITypes data in " + savePath);
+            file = new File(savePath);
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            out = new PrintWriter(file);
+            out.println(jsonMethodAPITypes);
             out.close();
         }
         catch (IOException e){
@@ -182,9 +197,10 @@ public class DataLoader {
         List<Invocation_> invocations = analysisResults.getInvocations();
         List<Import_> imports = analysisResults.getImports();
         List<ClassDTO> DTOs = analysisResults.getDTOs();
+        List<MethodAPITypes> methodAPITypes = analysisResults.getMethodAPITypes();
         logger.info("Saving data for Application " + appName + " !");
         save(classes, methods, invocations, imports, appName);
-        saveRefact(DTOs, appName);
+        saveRefact(appName, DTOs, methodAPITypes);
         return true;
     }
 

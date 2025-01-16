@@ -5,6 +5,7 @@ import com.decomp.analysis.Method_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import refactor.processors.DTOProcessor;
+import refactor.processors.MethodAPIProcessor;
 import spoon.Launcher;
 import spoon.OutputType;
 
@@ -60,9 +61,12 @@ public class DistributedASTParser extends ASTParser{
         launcher.addProcessor(invocationProcessor);
         DTOProcessor dtoProcessor = new DTOProcessor();
         launcher.addProcessor(dtoProcessor);
+        MethodAPIProcessor methodAPIProcessor = new MethodAPIProcessor(dtoProcessor.getAnalyzer());
+        launcher.addProcessor(methodAPIProcessor);
         launcher.run();
         ProcessedContainers output = new ProcessedContainers(typeProcessor.getObjects(), typeProcessor.getMethods(),
-                invocationProcessor.getFailedMaps(), new ArrayList<>(), dtoProcessor.getDTOs());
+                invocationProcessor.getFailedMaps(), new ArrayList<>(), dtoProcessor.getDTOs(),
+                methodAPIProcessor.getApiTypesMapValues());
         return output;
     }
 
@@ -82,6 +86,8 @@ public class DistributedASTParser extends ASTParser{
             output.methods.addAll(analysisResults.methods);
             output.invocations.addAll(analysisResults.invocations);
             output.imports.addAll(analysisResults.imports);
+            output.DTOs.addAll(analysisResults.DTOs);
+            output.methodAPITypes.addAll(analysisResults.methodAPITypes);
             it++;
         }
         logger.info("Process finished successfully");

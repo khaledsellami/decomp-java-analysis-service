@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.decomp.refactor.extension";
+option java_outer_classname = "RefactorExtensionProto";
+option objc_class_prefix = "JRED";
+
+import "refact.proto";
+
+package refactor.extension;
+//version 0
+
+
+message MethodAPITypes {
+  string fullName = 1;
+  FieldType outputType = 2;
+  repeated FieldType inputTypes = 3;
+}
+
+message MethodAPITypesContainer {
+  repeated MethodAPITypes apiTypes = 2;
+}
