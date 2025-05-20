@@ -60,7 +60,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         this.serviceName = serviceName;
     }
 
-    private boolean setIsAnnotationAndInterface(Class_.Builder object_, CtType ctType) {
+    private boolean setIsAnnotationAndInterface(Class_.Builder object_, CtType ctType) throws ClassCastException {
         boolean isAnnotation = false;
         CtClass ctClass;
         CtAnnotationType ctAnnotationType;
@@ -81,6 +81,7 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
                     logger.error(
                             "encountered cast error in line " + ctType.getOriginalSourceFragment().getSourcePosition()
                     );
+                    throw new ClassCastException();
                 }
             }
         }
@@ -200,7 +201,13 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
     public void process(CtType ctType) {
         // logger.info("Started processing type \"" + ctType.getQualifiedName() + "\"");
         Class_.Builder object_ = Class_.newBuilder();
-        boolean isAnnotation = setIsAnnotationAndInterface(object_, ctType);
+        boolean isAnnotation;
+        try {
+            isAnnotation = setIsAnnotationAndInterface(object_, ctType);
+        } catch (ClassCastException e) {
+            logger.error("encountered cast error in line " + ctType.getOriginalSourceFragment().getSourcePosition());
+            return;
+        }
         object_.setIsImplicit(ctType.isImplicit());
         object_.setIsAnonymous(ctType.isAnonymous());
         object_.setSimpleName(ctType.getSimpleName());
@@ -234,13 +241,18 @@ public class TypeProcessor extends AbstractProcessor<CtType> {
         }
         List<String> classConstructors = new ArrayList<>();
         if ((!object_.getIsInterface())&&(!isAnnotation)){
-            CtClass ctClass = (CtClass) ctType;
-            for (Object c:ctClass.getConstructors()){
-                CtConstructor constructor = (CtConstructor) c;
-                Method_.Builder method_ = Method_.newBuilder();
-                parseMethod(constructor, method_, ctType, textAndNames, parameterTypes, returnTypes, classConstructors,
-                        true);
-                methods.add(method_.build());
+            try {
+                CtClass ctClass = (CtClass) ctType;
+                for (Object c : ctClass.getConstructors()) {
+                    CtConstructor constructor = (CtConstructor) c;
+                    Method_.Builder method_ = Method_.newBuilder();
+                    parseMethod(constructor, method_, ctType, textAndNames, parameterTypes, returnTypes, classConstructors,
+                            true);
+                    methods.add(method_.build());
+                }
+            }
+            catch (ClassCastException e) {
+                logger.error("encountered cast error in line " + ctType.getOriginalSourceFragment().getSourcePosition());
             }
         }
         // add doc strings and all comments
